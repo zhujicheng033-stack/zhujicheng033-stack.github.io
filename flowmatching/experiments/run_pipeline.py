@@ -138,7 +138,7 @@ def stage2_cfm_training(adata, state_labels, transition_scores, config: dict):
     cell_line_ids = torch.tensor([condition_vocab.get_cell_line_id(c) for c in adata.obs['cell_line']], dtype=torch.long)
     doses = torch.tensor(adata.obs['timepoint_id'].values, dtype=torch.float32).unsqueeze(-1)
     
-    c_tensor = context_encoder(drug_ids, cell_line_ids, doses)
+    c_tensor = context_encoder(drug_ids, cell_line_ids, doses).detach()
     
     print(f"✓ Context encoding: shape {c_tensor.shape}")
     
@@ -322,7 +322,7 @@ def validation(model, adata, state_labels, context_encoder, condition_vocab, con
         dtype=torch.long
     )
     doses = torch.tensor(adata.obs.loc[p0_mask, 'timepoint_id'].values[:len(X_p0)], dtype=torch.float32).unsqueeze(-1)
-    c = context_encoder(drug_ids, cell_line_ids, doses).numpy()
+    c = context_encoder(drug_ids, cell_line_ids, doses).detach().numpy()
     
     # Reconstruct
     result = reconstructor.reconstruct_from_P0(X_p0, c, num_steps=50)

@@ -1,4 +1,4 @@
-"""Configuration file for the CFM pipeline."""
+# Configuration file for the CFM pipeline.
 
 # Stage 1: Manifold extraction
 stage1:
@@ -16,7 +16,7 @@ stage2:
   # Training
   learning_rate: 0.001
   batch_size: 32
-  n_epochs: 50
+  n_epochs: 20
   device: cpu  # or 'cuda'
   
   # Loss weights
@@ -35,8 +35,8 @@ data:
   n_drugs: 2
   n_cell_lines: 2
   n_timepoints: 3
-  n_cells_per_condition: 500
-  n_genes: 2000
+  n_cells_per_condition: 100
+  n_genes: 200
   n_variable_genes: 50
   seed: 42
 
