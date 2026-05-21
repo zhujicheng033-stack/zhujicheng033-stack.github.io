@@ -1,0 +1,51 @@
+"""Configuration file for the CFM pipeline."""
+
+# Stage 1: Manifold extraction
+stage1:
+  n_components: 20
+  n_states: 3
+  random_state: 42
+
+# Stage 2: CFM training
+stage2:
+  # Model architecture
+  hidden_dim: 256
+  n_layers: 3
+  context_dim: 5
+  
+  # Training
+  learning_rate: 0.001
+  batch_size: 32
+  n_epochs: 50
+  device: cpu  # or 'cuda'
+  
+  # Loss weights
+  lambda_geom: 0.1
+  lambda_context: 0.01
+  lambda_smooth: 0.001
+
+# Stage 3: Attribution
+stage3:
+  top_n_genes: 100
+  percentile_flow: 90
+  percentile_static: 90
+
+# Data
+data:
+  n_drugs: 2
+  n_cell_lines: 2
+  n_timepoints: 3
+  n_cells_per_condition: 500
+  n_genes: 2000
+  n_variable_genes: 50
+  seed: 42
+
+# Validation
+validation:
+  mmd_gamma: 1.0
+  gene_recovery_top_k: 50
+
+# Logging
+logging:
+  verbose: true
+  save_interval: 10  # Save every N epochs
