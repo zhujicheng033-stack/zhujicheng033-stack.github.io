@@ -1,0 +1,139 @@
+================================================================================
+            {                 echo ___BEGIN___COMMAND_OUTPUT_MARKER___;                 PS1="";PS2="";unset HISTFILE;                 EC=$?;                 echo "___BEGIN___COMMAND_DONE_MARKER___$EC";             }
+================================================================================
+
+'EOF''! 'EOF': ~/flowmatching/
+
+            {                 echo ___BEGIN___COMMAND_OUTPUT_MARKER___;                 PS1="";PS2="";unset HISTFILE;                 EC=$?;                 echo "___BEGIN___COMMAND_DONE_MARKER___$EC";             }
+================================================================================
+
+#1. 'EOF' 
+)
+   cd ~/flowmatching
+   pip install -r requirements.txt
+
+)
+   cd experiments
+   python run_pipeline.py --config config.yaml
+
+3. !
+   - Loss?
+   - Stage 13?
+   - Stage core/kinetic/static?
+
+'EOF''EOF'
+================================================================================
+
+data/
+ synthetic_data_generator.'EOF'
+
+models/ (    s)
+ stage2_cfm. CFMpy ('EOF'!)                     
+
+ components/  
+ bezier.py                    BBBBBBBBBzier
+ losses.py                    .VolumeIcon.icns .file .nofollow .resolve .vol Applications Library System Users Volumes bin cores dev etc home opt private sbin tmp usr var 
+
+validation/
+ metrics.py                        'EOF''EOF'
+
+experiments/
+ config.yaml                       (_pipeline.py                 runner
+
+'EOF'
+================================================================================
+
+#
+:        ~1,700 
+        10Python
+losses)
+        config.yaml--------
+
+'EOF''
+================================================================================
+
+ .VolumeIcon.icns .file .nofollow .resolve .vol Applications Library System Users Volumes bin cores dev etc home opt private sbin tmp usr var Stage
+  Stage 'EOF'
+  Stage 1: 
+  Stage 2: CFM'EOF' (Bzier)))))))))
+#  Stage 
+)
+  Stage 4: .VolumeIcon.icns .file .nofollow .resolve .vol Applications Library System Users Volumes bin cores dev etc home opt private sbin tmp usr var 
+
+ 
+  x(t) = (1- + 2t(1-t)x_T + xxtxxt)
+echo)
+
+ 
+  L = L_flow + 0.1L_geom + 0.01L_context + 0.001L_smooth
+  
+  L_flow:    
+  L_geom:    'EOF'
+  L_context: 
+#  L_smooth:  
+echo
+
+#
+
+DE
+            {                 echo ___BEGIN___COMMAND_OUTPUT_MARKER___;                 PS1="";PS2="";unset HISTFILE;                 EC=$?;                 echo "___BEGIN___COMMAND_DONE_MARKER___$EC";             }
+            {                 echo ___BEGIN___COMMAND_OUTPUT_MARKER___;                 PS1="";PS2="";unset HISTFILE;                 EC=$?;                 echo "___BEGIN___COMMAND_DONE_MARKER___$EC";             } 
+
+            {                 echo ___BEGIN___COMMAND_OUTPUT_MARKER___;                 PS1=;PS2=;unset HISTFILE;                 EC=0;                 echo ___BEGIN___COMMAND_DONE_MARKER___
+================================================================================
+
+P1 echo
+#1. pipeline
+
+#2. 
+training_step
+3. .VolumeIcon.icns .file .nofollow .resolve .vol Applications Library System Users Volumes bin cores dev etc home opt private sbin tmp usr var loss
+
+P2 
+1. L_context (\! . .anaconda-navigator-post-link.sh .anaconda-navigator-pre-unlink.sh .nb_conda_kernels-post-link.bat .nb_conda_kernels-post-link.sh .nb_conda_kernels-pre-unlink.bat .nb_conda_kernels-pre-unlink.sh .python.app-post-link.sh .python.app-pre-unlink.sh 2to3 2to3-3.12 \: AssetCacheLocatorUtil AssetCacheManagerUtil AssetCacheTetheratorUtil BTLEServer BTLEServerAgent BlueTool BootCacheControl DeRez DevToolsSecurity DirectoryService GetFileInfo IOAccelMemory IOMFB_FDR_Loader IOSDebug JxrDecApp JxrEncApp KernelEventAgent ObjectDump PasswordService R ResMerger Rez Rscript SafeEjectGPU SetFile SplitForks WirelessRadioManagerd \[ \[\[ ]] aa ab ac accton acountry activate actool adig aea aec afclip afconvert afhash afida afinfo afktool afplay afscexpand agentxtrap agvtool ahost alembic alias amt anaconda anaconda-navigator anaconda-project aomdec aomenc apachectl apfs_hfs_convert apfs_unlockfv app-sso appleh13camerad appleh16camerad applesingle apply appsleepd apropos ar arch archspec arm64-apple-darwin20.0.0-ObjectDump arm64-apple-darwin20.0.0-ar arm64-apple-darwin20.0.0-as arm64-apple-darwin20.0.0-bitcode_strip arm64-apple-darwin20.0.0-check_dylib arm64-apple-darwin20.0.0-checksyms arm64-apple-darwin20.0.0-cmpdylib arm64-apple-darwin20.0.0-codesign_allocate arm64-apple-darwin20.0.0-ctf_insert arm64-apple-darwin20.0.0-dyldinfo arm64-apple-darwin20.0.0-indr arm64-apple-darwin20.0.0-inout arm64-apple-darwin20.0.0-install_name_tool arm64-apple-darwin20.0.0-ld arm64-apple-darwin20.0.0-libtool arm64-apple-darwin20.0.0-lipo arm64-apple-darwin20.0.0-machocheck arm64-apple-darwin20.0.0-makerelocs arm64-apple-darwin20.0.0-mtoc arm64-apple-darwin20.0.0-mtor arm64-apple-darwin20.0.0-nm arm64-apple-darwin20.0.0-nmedit arm64-apple-darwin20.0.0-otool arm64-apple-darwin20.0.0-pagestuff arm64-apple-darwin20.0.0-ranlib arm64-apple-darwin20.0.0-redo_prebinding arm64-apple-darwin20.0.0-seg_addr_table arm64-apple-darwin20.0.0-seg_hack arm64-apple-darwin20.0.0-segedit arm64-apple-darwin20.0.0-size arm64-apple-darwin20.0.0-strings arm64-apple-darwin20.0.0-strip arm64-apple-darwin20.0.0-unwinddump arm64-apple-darwin20.0.0-vtool arp as asa aslmanager asr assetutil at atos atq atrm atsutil audit auditd auditreduce automat-visualize automationmodetool automator automount autopep8 autopoint auval auvaltool avbanalyse avbdeviced avbdiagnose avbutil avconvert avmediainfo avmetareadwrite awk b2 b64decode b64encode banner base64 basename bash bashbug batch bc bg bind binhex binhex.pl binhex5.34.pl binstar bintrans bioutil bison bitcode_strip bitesize.d bjam black blackd bless bluetoothd bm4 bokeh bputil brctl break brotli bsdcat bsdcpio bsdtar bsdunzip bspatch builtin bundle bundler bunzip2 bzcat bzcmp bzdiff bzegrep bzfgrep bzgrep bzip2 bzip2recover bzless bzmore c++ c++filt c89 c99 c_rehash caffeinate cal calendar caller canbusutil cancel cap_mkdb captoinfo case cat cbrunsli cc cd certtool cfprefsd cftp chardetect chat check_dylib checkgid checksyms chflags chfn chgrp chmod chown chpass chroot chsh cjpeg ckeygen ckksctl cksum clang clang++ clangd claude clear cmp cmpdylib codecctl codesign codesign_allocate col colldef colrm column comm command compgen compile_et complete compress compression_tool conch conda conda-build conda-content-trust conda-convert conda-debug conda-develop conda-env conda-inspect conda-metapackage conda-pack conda-render conda-repo conda-server conda-skeleton conda-token conda2solv config_data config_data5.34 continue cookiecutter coreaudiod corelist corelist5.34 cp cpan cpan5.34 cph cpio cpp cpu_profiler.d cpuctl cpuinfo cpuwalk.d crc32 crc325.34 creatbyproc.d createhomedir crlrefresh cron crontab csfdiagnose csh csplit csreq csrutil csv-import ctags ctf_insert cu cups-config cupsaccept cupsctl cupsdisable cupsenable cupsfilter cupsreject cupstestppd curl curl-config curve_keygen cut cvadmin cvaffinity cvcp cvdb cvdbset cvfsck cvfsdb cvfsid cvgather cvlabel cvmkdir cvmkfile cvmkfs cvupdatefs cvversions dappprof dapptrace dash dask dask-scheduler dask-spec dask-ssh dask-worker datashader date dav1d db_archive db_checkpoint db_codegen db_deadlock db_dump db_hotbackup db_load db_printlog db_recover db_stat db_upgrade db_verify dbicadmin dbicadmin5.34 dbilogstrip dbilogstrip5.34 dbiprof dbiprof5.34 dbiproxy dbiproxy5.34 dbmmanage dbrunsli dc dd dddiagnose ddns-confgen deactivate debinhex.pl debinhex5.34.pl declare defaults delv demandoc derb derq desdp dev_mkdb devmodectl df diagnose-fu diff diff3 diffstat dig dirname dirs disklabel diskutil disown dispqlen.d dist_package_tool distnoted distro ditto djpeg dltest dmc dmesg dmypy dnctl dns-sd do done dot_clean dotenv drutil dscacheutil dscl dsconfigad dsconfigldap dseditgroup dsenableroot dserr dsexport dsimport dsmemberutil dsymutil dtrace dtruss du dumpsolv dwarfdump dyld_info dyld_usage dyldinfo dynamic_pager echo ed edquota egrep elasticurl elasticurl_cpp elastipubsub elif else enable enc2xs enc2xs5.34 encguess encguess5.34 encode_keychange env envsubst epylint erb errinfo esac eslogger eval ex exec execsnoop exit expand expect export expr eyapp eyapp5.34 f2py false fax2ps fax2tiff fc fcgistarter fddist fdesetup fdisk fg fgrep fi fibreconfig file filebyproc.d filecoordinationd fileproviderctl filtercalltree find findrule findrule5.34 finger firmwarepasswd fits2bitmap fitscheck fitscopy fitsdiff fitsheader fitsinfo fixproc fixqt4headers.pl flake8 flask flex flex++ fmt fold fontrestore fonttools footprint for fpack fping freetype-config fs_usage fsck fsck_apfs fsck_cs fsck_exfat fsck_fskit fsck_hfs fsck_msdos fsck_udf fstyp fstyp_hfs fstyp_msdos fstyp_ntfs fstyp_udf function funpack funzip fuser g++ gatherheaderdoc gcc gcore gcov gdbus gdbus-codegen gem gen_bridge_metadata genbrk gencat gencfu gencnval gendict genrb genstrings get_gprof get_objgraph getconf getopt getopts gettext gettext.sh gettextize gflags_completions.sh gif2h5 gif2rgb gifbuild gifclrmp giffix giftext giftool gio gio-querymodules git git-receive-pack git-shell git-upload-archive git-upload-pack gktool glib-compile-resources glib-compile-schemas glib-genmarshal glib-gettextize glib-mkenums gm4 gnumake gobject-query gperf gpt graphicssession grep gresource groups grpc_cpp_plugin grpc_csharp_plugin grpc_node_plugin grpc_objective_c_plugin grpc_php_plugin grpc_python_plugin grpc_ruby_plugin gsettings gss-client gssd gst-device-monitor-1.0 gst-discoverer-1.0 gst-inspect-1.0 gst-launch-1.0 gst-play-1.0 gst-stats-1.0 gst-typefind-1.0 gtester gtester-report gunzip gzcat gzexe gzip h2ph h2ph5.34 h2xs h2xs5.34 h52gif h5c++ h5cc h5clear h5copy h5debug h5diff h5dump h5fc h5format_convert h5import h5jam h5ls h5mkgrp h5perf_serial h5redeploy h5repack h5repart h5stat h5unjam h5watch halt hash hdid hdik hdiutil hdxml2manxml head headerdoc2html heap help hexdump hidutil history hiutil holoviews host hostinfo hostname hotspot.d hpmdiagnose htcacheclean htdbm htdigest htmltree htmltree5.34 htpasswd httpd httpd-wrapper httpx httxt2dbm ibtool iconutil iconv ictool icu-config icuexportdata icuinfo id idle3 idle3.12 if ifconfig imagecodecs imageio_download_bin imageio_remove_bin imcopy imptrace in indent indr infocmp infotocap innochecksum inout install install_name_tool installcheck installer instmodsh instmodsh5.34 ioalloccount ioclasscount iofile.d iofileb.d iopattern iopending ioreg iosnoop iostat iotop ip2cc ip2cc5.34 ipconfig ipcount ipcount5.34 ipcrm ipcs iperf3-darwin ippeveprinter ippfind ipptool iptab iptab5.34 ipython ipython3 irb isort isort-identify-imports isql isympy iusql jar jarsigner java javac javadoc javap javaws jcmd jconsole jcontrol jdb jdeps jhsdb jimage jinfo jjs jlink jlpm jmap jobs join jot jp.py jpackage jpegtran jpgicc jps jq jrunscript jshell json_pp json_pp5.34 json_xs json_xs5.34 jsondiff jsonpatch jsonpointer jsonschema jstack jstat jstatd jupyter jupyter-console jupyter-dejavu jupyter-events jupyter-execute jupyter-kernel jupyter-kernelspec jupyter-lab jupyter-labextension jupyter-labhub jupyter-migrate jupyter-nbconvert jupyter-notebook jupyter-qtconsole jupyter-run jupyter-server jupyter-troubleshoot jupyter-trust jupyter_mac.command k5srvutil kadmin kadmin.local kcc kcditto kdcsetup kdestroy kextcache kextfind kextlibs kextload kextstat kextunload kextutil keychain-access keyring keytool kgetcred kill kill.d killall kinit klist klist_cdhashes kmutil kpasswd krb5-config krbservicesetup ksh kswitch ktrace ktutil kvno lam languagesetup last lastcomm lastwords latency launchctl launchd layerutil lconvert ld ldapadd ldapcompare ldapdelete ldapexop ldapmodify ldapmodrdn ldappasswd ldapsearch ldapurl ldapwhoami ldid leaks leave less lessecho let lex libdeflate-gunzip libdeflate-gzip libnetcfg libnetcfg5.34 libpng-config libpng16-config libtool link linkicc lipo lldb llvm-g++ llvm-gcc ln loads.d local locale localedef localemanager locate lockf lockstat log logger login logname logout logresolve look lorder lp lpadmin lpc lpinfo lpmove lpoptions lpq lpr lprm lprodump lpstat lrelease lrelease-pro ls lsappinfo lsbom lskq lsm lsm2bin lsmp lsof lsvfs lupdate lupdate-pro lwp-download lwp-download5.34 lwp-dump lwp-dump5.34 lwp-mirror lwp-mirror5.34 lwp-request lwp-request5.34 lz4 lz4_decompress lz4c lz4cat lzcat lzcmp lzdiff lzegrep lzfgrep lzgrep lzless lzma lzmadec lzmainfo lzmore m4 mDNSResponder mDNSResponderHelper macbinary macchangeqt macdeployqt macerror macerror5.34 machine machocheck macoserror mail mailmail mailq mailx make makeconv makerelocs mako-render malloc_history mamba-package man mandoc mandoc_soelim manpath markdown-it markdown_py matplotlib mcxquery mcxrefresh md5 md5sum mddiagnose mdfind mdimport mdls mdutil memory_pressure mergesolv mesg mg mib2c mib2c-update mig mirror_server mirror_server_stop mkbom mkdir mkextunpack mkfifo mkfile mklocale mknod mkpassdb mktemp mnthome moc modelcatalogdump modelmanagerdump moose-outdated moose-outdated5.34 more mount mount_9p mount_acfs mount_afp mount_apfs mount_cd9660 mount_cddafs mount_devfs mount_exfat mount_fdesc mount_ftp mount_hfs mount_msdos mount_nfs mount_smbfs mount_tmpfs mount_udf mount_virtiofs mount_webdav mp2bug mpioutil mpsgraphtool msgattrib msgcat msgcmp msgcomm msgconv msgen msgexec msgfilter msgfmt msggrep msginit msgmerge msgunfmt msguniq mtoc mtor mtree mv my_print_defaults myisam_ftdump myisamchk myisamlog myisampack mypy mypyc mysql mysql.server mysql_client_test mysql_client_test_embedded mysql_config mysql_config_editor mysql_embedded mysql_install_db mysql_plugin mysql_secure_installation mysql_ssl_rsa_setup mysql_tzinfo_to_sql mysql_upgrade mysqladmin mysqlbinlog mysqlcheck mysqld mysqld_multi mysqld_safe mysqldump mysqldumpslow mysqlimport mysqlpump mysqlshow mysqlslap mysqltest mysqltest_embedded mysqlxtest nano navigator-updater nbdst nc ncal ncctl ncdestroy ncinit nclist ncurses5.4-config ncursesw6-config ndp net-server net-server5.34 net-snmp-cert net-snmp-config net-snmp-create-v3-user netbiosd netstat nettop networkQuality networksetup newaliases newfs_apfs newfs_exfat newfs_fskit newfs_hfs newfs_msdos newfs_udf newgrp newproc.d newsyslog nfs4mapid nfsd nfsiod nfsstat ngettext nghttp nghttpd nghttpx nice nl nlcontrol nltk nm nmedit nohup nologin normalizer notifyd notifyutil nscurl nslookup nsupdate numba nvram objdump ocspcheck ocspd od odbc_config odbcinst odutil onig-config open opendiff opensnoop openssl opj_compress opj_decompress opj_dump orbd orc-contents orc-memory orc-metadata orc-scan orc-statistics osacompile osadecompile osalang osascript otctl otool pack200 package-stash-conflicts package-stash-conflicts5.34 pagesize pagestuff pal2rgb panel par.pl par5.34.pl parl parl5.34 parldyn parldyn5.34 passwd paste patch pathchk pathopens.d pax pbcopy pbpaste pcap-config pcre2-config pcre2grep pcre2posix_test pcre2test pcsctest pdisk perl perl5.34 perlbug perlbug5.34 perldoc perldoc5.34 perlivp perlivp5.34 perlthanks perlthanks5.34 perror pfctl pg_config pgrep pico piconv piconv5.34 pidpersec.d ping ping6 pip pip3 pip3.12 pkgbuild pkgdata pkginfo pkgutil pkill pl pl2pm pl2pm5.34 plockstat pluginkit plutil pmset png-fix-itxt pngfix pod2html pod2html5.34 pod2man pod2man5.34 pod2readme pod2readme5.34 pod2text pod2text5.34 pod2usage pod2usage5.34 podchecker podchecker5.34 policytool popd postalias postcat postconf postdrop postfix postkick postlock postlog postmap postmulti postqueue postsuper power_report.sh powermetrics pp pp5.34 ppdc ppdhtml ppdi ppdmerge ppdpo ppm2tiff pppd pr praudit priclass.d pridist.d printenv printf procsystime produce_x_platform_fuzz_corpus productbuild productsign profiles protoc protoc-25.3.0 prove prove5.34 ps psicc psm pt2to3 ptar ptar5.34 ptardiff ptardiff5.34 ptargrep ptargrep5.34 ptdump ptrepack pttree purge pushd pwd pwd_mkdb pwpolicy py.test pybabel pycodestyle pyct pydoc pydoc3 pydoc3.12 pydocstyle pyflakes pyftmerge pyftsubset pygmentize pyhtmlizer pyjson5 pylint pylint-config pylsp pylupdate5 pymupdf pyrcc5 pyreverse pysemver pytest python python.app python3 python3-config python3.1 python3.12 python3.12-config pythonw pyuic5 qdarkstyle qdarkstyle.example qdarkstyle.utils qdbus qdbuscpp2xml qdbusxml2cpp qdoc qgltf qlalr qlmanage qmake qmlcachegen qmlformat qmlimportscanner qmllint qmlmin qmlpreview qmlscene qmltestrunner qmltyperegistrar qscxmlc qt.conf qta-browser qtattributionsscanner qtdiag qtpaths qtplugininfo qtpy quota quotacheck quotaoff quotaon qvkgen racoon rails rake ranlib rarpd raw2tiff rcc rdjpgcom rdoc read readlink readonly realpath reboot recode-sr-latin redo_prebinding renice repairHomePermissions repc replace repo2solv repquota reset resolveLinks resolve_stack_dump resolveip return rev ri rm rmdir rmic rmid rmiregistry rotatelogs route rpc.lockd rpc.statd rpcbind rpcgen rpcinfo rs rst2html.py rst2html4.py rst2html5.py rst2latex.py rst2man.py rst2odt.py rst2odt_prepstyles.py rst2pseudoxml.py rst2s5.py rst2xetex.py rst2xml.py rstpep2html.py rsync rtadvd ruby run_x_platform_fuzz_corpus rview rvim rwbypid.d rwbytype.d rwsnoop sa safaridriver samp_hub sample sampleproc sandbox-exec say sc_auth sc_usage scandeps.pl scandeps5.34.pl sclient scp scrapy screen screencapture script scselect scutil sdef sdiff sdp sdx security securityd sed seeksize.d seg_addr_table seg_hack segedit select send2trash sendmail seq serialver serverinfo servertool set setkey setquota setregion setuids.d sfltool sftp sh sha1 sha1sum sha224 sha224sum sha256 sha256_profile sha256sum sha384 sha384sum sha512 sha512sum shar sharing shasum shasum5.34 shazam shift shlock shopt shortcuts showmount showtable shutdown sigdist.d sim_client sip-build sip-distinfo sip-install sip-module sip-sdist sip-wheel sips size skivi skywalkctl slapacl slapadd slapauth slapcat slapconfig slapdn slapindex slappasswd slapschema slaptest sleep slencheck slogin slugify smbd smbdiagnose smbutil smem sndiskmove snfsdefrag snmp-bridge-mib snmpbulkget snmpbulkwalk snmpconf snmpd snmpdelta snmpdf snmpget snmpgetnext snmpinform snmpnetstat snmpset snmpstatus snmptable snmptest snmptranslate snmptrap snmptrapd snmpusm snmpvacm snmpwalk snquota sntp sntpd softwareupdate sort source sourcekit-lsp spctl spfd spfd5.34 spfquery spfquery5.34 sphinx-apidoc sphinx-autogen sphinx-build sphinx-quickstart spindump splain splain5.34 split spray spyder sqlite3 sqlite3_analyzer ssh ssh-add ssh-agent ssh-copy-id ssh-keygen ssh-keyscan sshd sso_util stapler stat streamlit streamlit.cmd streamzip streamzip5.34 stringdups strings strip stty stubgen stubtest su sudo sum suspend sw_vers swcutil swift swift-inspect swiftc symbols symbolscache symilar sync syncqt.pl sysadminctl syscallbypid.d syscallbyproc.d syscallbysysc.d sysctl sysdiagnose syslog syslogd syspolicy_check system-override system_profiler systemextensionsctl systemkeychain systemsetup systemsoundserverd systemstats tab2space tabs tabulate tail tailspin talk tar taskinfo taskpolicy tbtdiagnose tccutil tclsh tclsh8.5 tclsh8.6 tcpdump tcsh tee test test-yaml test-yaml5.34 testsolv textutil tftp then thermal tic tidy tidy_changelog tidy_changelog5.34 tiff2bw tiff2fsspec tiff2icns tiff2pdf tiff2ps tiff2rgba tiffcmp tiffcomment tiffcp tiffcrop tiffdither tiffdump tifffile tiffinfo tiffmedian tiffset tiffsplit tiffutil tificc time timer_analyser.d timerfires times timesyncanalyse timezone-dump tkcon tkconch tkmib tkpp tkpp5.34 tldextract tmdiagnose tmutil tnameserv toe top tops topsyscall topsysproc torchfrtrace torchrun touch tput tqdm tr trace tracegen traceroute traceroute6 transicc trap traptoemail trash treereg treereg5.34 trial trimforce true truncate trustcachectl tset tsig-keygen tsort ttx tty twist twistd type typeset uasysdiagnose uic ul ulimit umask umount umtool unalias uname uncompress undill unexpand unidecode unifdef unifdefall uniq units universalaccessd unlink unlz4 unlzma unpack200 unset unsetpassword until unvis unwinddump unxz unzip unzipsfx unzstd update_dyld_shared_cache update_mcdp29xx uptime usbcfwflasher usbdiagnose usdcat usdchecker usdcrush usdextract usdrecord usdtree usdzip usernoted users uttype uuchk uucico uuclient uuconv uucp uudecode uuencode uuidgen uulog uuname uupick uusched uustat uuto uux uuxqt validate-docstrings vi view viewdiagnostic vifs vim vimdiff vimtutor vipw vis visudo vm_stat vmmap volint vpnd vsdbutil vtool w wait wait4path wall watchmedo wc wcslint wdutil wfsctl what whatis wheel whereis which while who whoami whois wish wish8.5 wish8.6 write wrjpgcom wsdump xar xargs xartutil xattr xcdebug xcode-select xcodebuild xcrun xcscontrol xcsdiagnose xctrace xed xgettext xgettext.pl xgettext5.34.pl xip xlwings xml2-config xml2-config.bak xml2man xmlcatalog xmllint xmlpatterns xmlpatternsvalidator xmlwf xpath xpath5.34 xprotect xsanctl xscertadmin xslt-config xsltproc xsubpp xsubpp5.34 xxd xz xzcat xzcmp xzdec xzdiff xzegrep xzfgrep xzgrep xzless xzmore yaa yacc yamlpp-events yamlpp-events5.34 yamlpp-highlight yamlpp-highlight5.34 yamlpp-load yamlpp-load-dump yamlpp-load-dump5.34 yamlpp-load5.34 yamlpp-parse-emit yamlpp-parse-emit5.34 yapf yapf-diff yapp yapp5.34 yes zcat zcmp zdiff zdump zegrep zfgrep zforce zfp zgrep zic zip zipcloak zipdetails zipdetails5.34 zipgrep zipinfo zipnote zipsplit zless zlib_decompress zmore znew zopfli zopflipng zprint zsh zstd zstdcat zstdgrep zstdless zstdmt \{ } 'EOF')
+.VolumeIcon.icns .file .nofollow .resolve .vol Applications Library System Users Volumes bin cores dev etc home opt private sbin tmp usr var : B. Configzier vs 
+
+P3 
+1. 'EOF''EOF'
+2. scVelo
+3. .VolumeIcon.icns .file .nofollow .resolve .vol Applications Library System Users Volumes bin cores dev etc home opt private sbin tmp usr var 
+
+
+================================================================================
+
+#
+:
+  1. experiments/run_pipeline.py     (main entry)
+  2. models/stage2_cfm.py            (CFM)
+  3. models/components/losses.py     (ents/losses.py:L_context    (P1)
+  2. experiments/config.yaml                  (
+  3. data/synthetic_data_generator.py         (o module named anndata"
+A: pip install anndata
+
+Q: Loss
+A: config.yaml--------learning_lambda_smooth
+
+Q: 
+A: batch_n_cells_per_condition
+
+Q: GPU
+A: config.yaml--------dddddddddevicecuda
+
+#
+
+================================================================================
+
+README.md              'EOF'
+QUICKSTART.md          
+#INSTALLATION.md        'EOF' 
+
+'EOF''EOF'
+PROJECT_SUMMARY.txt    EOF
+START_HERE.txt        (g
+pip install -r requirements.txt
+cd experiments
+python run_pipeline.py --config config.yaml
+
+!
+
+================================================================================

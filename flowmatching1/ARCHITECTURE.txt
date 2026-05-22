@@ -1,0 +1,235 @@
+================================================================================
+                         CFM PIPELINE ARCHITECTURE
+================================================================================
+
+
+                          PIPELINE FLOW (5 STAGES)                          
+
+
+                    STAGE 0: DATA PREPARATION
+                    
+                    Generate toy data
+ 2 drugs                        2 cell-lines  3 timepoints
+ 6,000 cells/condition
+ 2,000 genes with 50 "true" signal genes                      
+ Output: AnnData (6k cells                        2k genes)
+                              
+            {                 echo ___BEGIN___COMMAND_OUTPUT_MARKER___;                 PS1="";PS2="";unset HISTFILE;                 EC=$?;                 echo "___BEGIN___COMMAND_DONE_MARKER___$EC";             }
+        
+ STAGE 1: MANIFOLD EXTRACTION (SimpleManifoldExtractor)          
+        
+  1. Standardize (StandardScaler)                                
+ 20 dimensions                          
+  3. KMeans: Identify 3 states (P0, P_T, P1)                     
+  4. Compute transition  [0,1]              x)         
+                                                                 
+  Output: state_labels (6k,)                                     
+          transition_scores (6k,)                                
+          X_pca (6k, 20)                                         
+        
+                              
+            {                 echo ___BEGIN___COMMAND_OUTPUT_MARKER___;                 PS1="";PS2="";unset HISTFILE;                 EC=$?;                 echo "___BEGIN___COMMAND_DONE_MARKER___$EC";             }
+        
+ STAGE 2: CFM  (CORE)                         TRAINING         
+        
+                                                                 
+  MODEL: VelocityMLP                                             
+ Input: x (2k genes) + t (time) + c (context)                 
+ 256 (3 layers)                
+ Output: v (2k velocity vectors)                              
+                                                                 
+  TRAINING LOOP (50 epochs):                                     
+ For each batch:                                               
+ [0,1]                               t             
+ Compute B            zier path: x(t) = (1- + ...     xxt)
+ Forward: v_pred = v_net(x(t), t, c)                        
+ Compute target: v_target = 2(1-t)(x_T-)...  x            
+                                                               
+ LOSS COMPUTATION:                                            
+ L_flow    = MSE(v_pred, v_target)                         
+v_]      t L_geom    = E[w((((((((1-s(x_t))t)              
+ L_context = Var[v_context_c]                              
+__F                      xv/L_smooth  =               
+                                                               
+  L_total = L_flow + 0.LLLLLLL_geom +                1            
+            0.LLLLLLL_context + 0.LLLLLLL_smooth       00101            
+                                                               
+ Backward & Adam update                                      
+                                                                
+ Save model every 10 epochs                                   
+                                                                 
+          Output: trained v_        
+                              
+            {                 echo ___BEGIN___COMMAND_OUTPUT_MARKER___;                 PS1="";PS2="";unset HISTFILE;                 EC=$?;                 echo "___BEGIN___COMMAND_DONE_MARKER___$EC";             }
+        
+ STAGE 3: GENE ATTRIBUTION (AttributionAnalyzer)                 
+        
+                                                                 
+  COMPUTE IMPORTANCES:                                           
+ x                 v/Jacobian           
+ Static importance: DE (between-state variance)               
+                                                                 
+  THREE-WAY DECOMPOSITION:                                       
+ G_flow (kinetic top 10%)                                     
+ G_DGV (static top 10%)                                       
+                                                                
+ Core drivers    =  G_DGV                   flow           
+ Kinetic drivers = G_flow \ G_DGV (NOVEL!)                    
+ Static markers  = G_DGV \ G_flow                             
+                                                                 
+  Output: {core_drivers, kinetic_drivers, static_markers}        
+        
+                              
+            {                 echo ___BEGIN___COMMAND_OUTPUT_MARKER___;                 PS1="";PS2="";unset HISTFILE;                 EC=$?;                 echo "___BEGIN___COMMAND_DONE_MARKER___$EC";             }
+        
+ STAGE 4: VALIDATION                                             
+        
+ MMD(X_pred, X_true)          [distribution match]            
+ Wasserstein-2 distance        [sliced approx]                
+ State purity                  [clustering quality]            
+ Gene recovery F1              [attribution accuracy]          
+                                                                 
+  Output: {mmd, wasserstein_2, state_purity, f1}               
+        
+
+================================================================================
+                            MODULE DEPENDENCY GRAPH
+================================================================================
+
+data/
+ synthetic_data_generator.py
+    
+            {                 echo ___BEGIN___COMMAND_OUTPUT_MARKER___;                 PS1="";PS2="";unset HISTFILE;                 EC=$?;                 echo "___BEGIN___COMMAND_DONE_MARKER___$EC";             }
+ config.yaml    experiments/run_pipeline.py 
+              
+              
+              
+              
+            {                 echo ___BEGIN___COMMAND_OUTPUT_MARKER___;                 PS1="";PS2="";unset HISTFILE;                 EC=$?;                 echo "___BEGIN___COMMAND_DONE_MARKER___$EC";             }
+    models/stage1_featuremap.py
+              
+ sklearn (PCA, KMeans)              
+              
+            {                 echo ___BEGIN___COMMAND_OUTPUT_MARKER___;                 PS1="";PS2="";unset HISTFILE;                 EC=$?;                 echo "___BEGIN___COMMAND_DONE_MARKER___$EC";             }
+    models/stage2_cfm.py 
+              
+ models/components/bezier.py              
+ torch (tensor ops)                
+              
+ models/components/losses.py              
+ torch (loss computation)                
+              
+ torch (VelocityMLP, CFMModel, CFMTrainer)              
+                      
+            {                 echo ___BEGIN___COMMAND_OUTPUT_MARKER___;                 PS1="";PS2="";unset HISTFILE;                 EC=$?;                 echo "___BEGIN___COMMAND_DONE_MARKER___$EC";             }
+              models/stage3_attribution.py
+                      
+ models/stage2_cfm.py (v_net)                      
+ sklearn (DE analysis)                      
+ torch (Jacobian)                      
+                      
+            {                 echo ___BEGIN___COMMAND_OUTPUT_MARKER___;                 PS1="";PS2="";unset HISTFILE;                 EC=$?;                 echo "___BEGIN___COMMAND_DONE_MARKER___$EC";             }
+              validation/metrics.py
+                      
+ scipy (MMD, sliced Wasserstein)                      
+
+================================================================================
+                          CONFIGURATION FLOW
+================================================================================
+
+experiments/config.yaml
+        
+ data/synthetic_data_generator.py data.*         
+           (n_drugs, n_cell_lines, n_genes, etc.)        
+        
+ models/stage1_featuremap.py stage1.*         
+           (n_components, n_states, random_state)        
+        
+ models/stage2_cfm.py stage2.*         
+           (hidden_dim, n_layers, learning_rate, batch_size, n_epochs)        
+           (lambda_geom, lambda_context, lambda_smooth)        
+        
+ models/stage3_attribution.py stage3.*         
+           (top_n_genes, percentile_flow, percentile_static)        
+        
+ validation/metrics.py validation.*         
+                    (mmd_gamma, gene_recovery_top_k)
+
+================================================================================
+                              LOSS LANDSCAPE
+================================================================================
+
+                             /      \       |          |            |                    L_total = L_flow + 
+                            /        \      |          |            |
+                    velocity  geometric  cross-    jacobian
+                    matching  guidance   context   smooth
+
+                         100%      10%      1%      0.1%
+                                            
+                    (
+Effect:
+ L_flow:     drives cells toward B  zier path
+ L_geom:     keeps cells at rest in stable regions  
+ L_context:  enforces consistency across conditions  
+ L_smooth:   prevents Jacobian collapse  
+
+Tuning strategy:
+  1. Keep1.0 flow 
+  4. Increase   3. Increase   2. Increase 
+================================================================================
+                        COMPUTATIONAL COMPLEXITY
+================================================================================
+
+Stage 1 (Manifold):
+ PCA:    O(mmmmmmmin(n,g))     where n=cells, g=genesgggggggn  
+ KMeans: O(ppppppp) per iter  where k=states, p=PCA dimsnnnnnnnk  
+ Total:  ~O(ggggggg) ~ O(kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk) ~  1 secops 6kn  
+
+Stage 2 (CFM):
+ Forward: O())           where b=batch, h=hidden dimhhhhhhhb  
+ 2M ops per forward))            = O(32  
+ Backward: ~3   forward
+ Per epoch: sssssssteps * forward = ~100M opsb  
+ Total: 50 epochs * 100M =  30-60 secops   
+ GPU speedup: ~5-10  
+
+Stage 3 (Attribution):
+ Jacobian: O()) for each gene backward passhhhhhhhgggggggn  
+            = O()) with autograd overheadhhhhhhh6k  
+ Total:    g    (backward + gradient norm)
+            = 2k *   5-10 secops 2   
+ Parallelizable across genes  
+
+Stage 4 (Validation):
+ MMD: O())  = O()) =  0.5 secops 6kn  
+ Other: <1 sec  
+
+TOTAL: ~1-2 minutes CPU | ~30-50 seconds GPU
+
+================================================================================
+                        EXTENSION POINTS
+================================================================================
+
+1. Replace Stage 1 synthetic data
+ Load real h5ad file instead of generate_toy_data()
+
+2. Improve L_context
+ Implement factorization in losses.py:120-145
+
+3. Add real validation
+ Benchmark against other methods
+
+4. GPU acceleration
+ Change device from 'cpu' to 'cuda'
+ Batch multiple Jacobian computations
+
+5. Advanced loss functions
+ Add adversarial loss for distribution matching
+ Add contrastive loss for within-state consistency
+
+6. Visualization
+ Add UMAP plotting of state transitions
+ Quiver plots of velocity field
+ Heatmaps of top genes by category
+
+================================================================================
