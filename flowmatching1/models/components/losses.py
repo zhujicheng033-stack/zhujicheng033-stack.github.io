@@ -6,8 +6,8 @@ import torch.nn as nn
 
 class CFMLosses(nn.Module):
     """Collection of loss functions for CFM training."""
-    
-    def __init__(self, lambda_geom=0.1, lambda_context=0.01, lambda_smooth=0.001):
+
+    def __init__(self, lambda_geom=0.1, lambda_context=0.01, lambda_smooth=0.001, lambda_orth=0.1):
         """
         Args:
             lambda_geom: weight for L_geom
@@ -18,6 +18,7 @@ class CFMLosses(nn.Module):
         self.lambda_geom = lambda_geom
         self.lambda_context = lambda_context
         self.lambda_smooth = lambda_smooth
+        self.lambda_orth = lambda_orth
     
     def l_flow(
         self,
@@ -113,6 +114,43 @@ class CFMLosses(nn.Module):
         
         return v_ctx_l2
     
+    def l_orth(
+        self,
+        v_drug: torch.Tensor,
+        v_cell: torch.Tensor,
+        eps: float = 1e-8,
+    ) -> torch.Tensor:
+        """
+        L_orth: Orthogonality regularization between drug and cell-line velocity corrections.
+
+        Encourages v_drug and v_cell to point in orthogonal directions in gene space.
+        When they are orthogonal, each head captures truly independent, non-redundant
+        information — drug head cannot "absorb" cell-line signal and vice versa.
+
+        L_orth = E_batch[ cosine_similarity(v_drug, v_cell)² ]
+
+        Range: [0, 1]. Zero when v_drug ⊥ v_cell for every sample in the batch.
+
+        Args:
+            v_drug: drug velocity correction, shape (B, D)
+            v_cell: cell-line velocity correction, shape (B, D)
+            eps: numerical stability for zero-norm vectors
+
+        Returns:
+            scalar loss
+        """
+        # Dot product between the two correction vectors for each sample
+        dot = (v_drug * v_cell).sum(dim=-1)  # (B,)
+
+        # Norms
+        norm_drug = torch.norm(v_drug, dim=-1)  # (B,)
+        norm_cell = torch.norm(v_cell, dim=-1)  # (B,)
+
+        # Cosine similarity squared: bounded [0, 1], 0 = perfectly orthogonal
+        cos_sq = dot ** 2 / (norm_drug ** 2 * norm_cell ** 2 + eps)
+
+        return cos_sq.mean()
+
     def l_smooth(
         self,
         jacobian: torch.Tensor,
@@ -168,19 +206,23 @@ class CFMLosses(nn.Module):
         l_geom_val: torch.Tensor,
         l_context_val: torch.Tensor,
         l_smooth_val: torch.Tensor,
+        l_orth_val: torch.Tensor = None,
     ) -> torch.Tensor:
         """
         Total weighted loss.
-        
-        L_total = L_flow + λ₁·L_geom + λ₂·L_context + λ₃·L_smooth
+
+        L_total = L_flow + λ_geom·L_geom + λ_ctx·L_context
+                         + λ_smooth·L_smooth + λ_orth·L_orth
         """
         total = (
             l_flow_val
-            + self.lambda_geom * l_geom_val
+            + self.lambda_geom   * l_geom_val
             + self.lambda_context * l_context_val
-            + self.lambda_smooth * l_smooth_val
+            + self.lambda_smooth  * l_smooth_val
         )
-        
+        if l_orth_val is not None:
+            total = total + self.lambda_orth * l_orth_val
+
         return total
 
 

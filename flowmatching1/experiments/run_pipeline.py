@@ -142,14 +142,14 @@ def stage2_cfm_training(adata, state_labels, transition_scores, config: dict):
     
     print(f"✓ Context encoding: shape {c_tensor.shape}")
     
-    # Create model with factorized velocity field
-    n_drugs = condition_vocab.get_n_drugs()
+    # Create model with additive factorized velocity field
     model = CFMModel(
         input_dim=X.shape[1],
         context_dim=c_tensor.shape[1],
+        drug_context_dim=context_encoder.embedding_dim,
+        cell_context_dim=context_encoder.embedding_dim,
         hidden_dim=config['stage2']['hidden_dim'],
         n_layers=config['stage2']['n_layers'],
-        n_contexts=max(1, n_drugs),  # One context head per drug type
     )
     
     print(f"✓ Model created: {sum(p.numel() for p in model.parameters()) / 1e6:.2f}M parameters")
@@ -214,6 +214,10 @@ def stage2_cfm_training(adata, state_labels, transition_scores, config: dict):
             ctx_idx = rng.choice(n_cells, batch_size)
             c_batch = c_tensor[ctx_idx]
             s_batch = s_tensor[ctx_idx]
+
+            # CFG: randomly null out context (15% drop probability)
+            if rng.random() < 0.15:
+                c_batch = torch.zeros_like(c_batch)
 
             loss_dict = model.training_step(x0, x_T, x1, t, c_batch, s_t=s_batch)
             loss = loss_dict['total_loss']

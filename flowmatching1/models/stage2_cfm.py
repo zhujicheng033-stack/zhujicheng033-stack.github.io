@@ -92,36 +92,43 @@ class VelocityMLP(nn.Module):
 
 
 class CFMModel(nn.Module):
-    """Unified Flow Matching model with factorized velocity field and Bézier anchors."""
-    
+    """Additive factorized velocity field for compositional OOD generalization.
+
+    v_θ(x, t, c) = v_shared(x, t)
+                 + v_drug(x, t, c_drug)     # drug-specific correction
+                 + v_cell(x, t, c_cell)     # cell-line-specific correction
+
+    c is the full concatenated context from ContextEncoder:
+      c = [drug_emb (drug_context_dim) | cell_emb (cell_context_dim) | dose_emb ...]
+
+    Drug and cell-line corrections are computed from INDEPENDENT sub-vectors.
+    For an unseen (drug_k, cell_j) combination, v_drug uses drug_k's embedding
+    (learned from other conditions containing drug_k) and v_cell uses cell_j's
+    embedding (learned from other conditions containing cell_j). They are simply
+    added — no joint MLP ever sees the unseen combination, eliminating the
+    feature-entanglement OOD failure mode.
+    """
+
     def __init__(
         self,
         input_dim: int,
-        context_dim: int = 5,
+        context_dim: int = 20,
+        drug_context_dim: int = 8,
+        cell_context_dim: int = 8,
         hidden_dim: int = 256,
         n_layers: int = 3,
-        n_contexts: int = 1,
+        n_contexts: int = 1,   # kept for backward compatibility, unused
     ):
-        """
-        Args:
-            input_dim: dimension of expression data
-            context_dim: dimension of context encoding (drug + cell-line + dose)
-            hidden_dim: hidden dimension of MLP
-            n_layers: number of hidden layers
-            n_contexts: number of context-specific heads
-        """
         super().__init__()
-        
+
         self.input_dim = input_dim
-        self.context_dim = context_dim
-        self.n_contexts = n_contexts
-        
-        # Time embedding
+        self.drug_context_dim = drug_context_dim
+        self.cell_context_dim = cell_context_dim
+
         time_emb_dim = 32
         self.time_embedding = SinusoidalTimeEmbedding(dim=time_emb_dim)
-        
-        # Shared velocity component: v_shared(x, t_emb)
-        # Input: [x (D), t_emb (32)] -- no context!
+
+        # Shared: condition-agnostic cell dynamics (dominant component)
         self.v_shared = VelocityMLP(
             input_dim=input_dim + time_emb_dim,
             hidden_dim=hidden_dim,
@@ -129,53 +136,48 @@ class CFMModel(nn.Module):
             n_layers=n_layers,
             use_layer_norm=True,
         )
-        
-        # Context-specific heads: v_context_k(x, t_emb, c)
-        # One head per context type
-        self.v_context_heads = nn.ModuleList([
-            VelocityMLP(
-                input_dim=input_dim + time_emb_dim + context_dim,  # Include time embedding and context
-                hidden_dim=hidden_dim,
-                output_dim=input_dim,
-                n_layers=n_layers,
-                use_layer_norm=True,
-            )
-            for _ in range(n_contexts)
-        ])
-        
-        # Dynamic context weights: α(c) → softmax weights for context heads
-        self.alpha_weights = nn.Sequential(
-            nn.Linear(context_dim, hidden_dim),
-            nn.ReLU(),
-            nn.Linear(hidden_dim, n_contexts),
+
+        # Drug-specific velocity correction — sees ONLY drug embedding, never cell_line
+        self.v_drug = VelocityMLP(
+            input_dim=input_dim + time_emb_dim + drug_context_dim,
+            hidden_dim=hidden_dim // 2,
+            output_dim=input_dim,
+            n_layers=max(1, n_layers - 1),
+            use_layer_norm=True,
         )
-        
+
+        # Cell-line-specific velocity correction — sees ONLY cell_line embedding
+        self.v_cell = VelocityMLP(
+            input_dim=input_dim + time_emb_dim + cell_context_dim,
+            hidden_dim=hidden_dim // 2,
+            output_dim=input_dim,
+            n_layers=max(1, n_layers - 1),
+            use_layer_norm=True,
+        )
+
         # Loss function
-        self.loss_fn = CFMLosses(lambda_geom=0.1, lambda_context=0.01, lambda_smooth=0.001)
-    
+        self.loss_fn = CFMLosses(lambda_geom=0.1, lambda_context=0.01, lambda_smooth=0.001, lambda_orth=0.0)
+
     def _forward_internal(self, x: torch.Tensor, t_emb: torch.Tensor, c: torch.Tensor):
         """
-        Internal forward using pre-computed time embedding.
-        Returns (v, v_ctx_outputs) to avoid recomputing context heads in training_step.
+        Additive forward pass. Splits c into drug/cell sub-vectors before
+        passing to their respective heads — no joint context ever enters a
+        single MLP together.
+
+        Returns (v_total, [v_drug, v_cell]) for loss computation.
         """
-        x_t_emb = torch.cat([x, t_emb], dim=-1)
-        v_shared = self.v_shared(x_t_emb)
+        c_drug = c[:, :self.drug_context_dim]
+        c_cell = c[:, self.drug_context_dim:self.drug_context_dim + self.cell_context_dim]
 
-        alpha = torch.softmax(self.alpha_weights(c), dim=-1)  # (B, n_contexts)
+        v_s = self.v_shared(torch.cat([x, t_emb], dim=-1))
+        v_d = self.v_drug(torch.cat([x, t_emb, c_drug], dim=-1))
+        v_c = self.v_cell(torch.cat([x, t_emb, c_cell], dim=-1))
 
-        x_t_emb_c = torch.cat([x, t_emb, c], dim=-1)
-        v_context_sum = torch.zeros_like(v_shared)
-        v_ctx_outputs = []
-        for k, context_head in enumerate(self.v_context_heads):
-            v_ctx_k = context_head(x_t_emb_c)
-            v_ctx_outputs.append(v_ctx_k)
-            v_context_sum = v_context_sum + alpha[:, k:k+1] * v_ctx_k
-
-        return v_shared + v_context_sum, v_ctx_outputs
+        return v_s + v_d + v_c, [v_d, v_c]
 
     def forward(self, x: torch.Tensor, t: torch.Tensor, c: torch.Tensor) -> torch.Tensor:
         """
-        Predict velocity: v_θ(x, t, c) = v_shared(x, t) + Σ_k α_k(c) * v_context_k(x, t, c)
+        Predict velocity: v_θ(x, t, c) = v_shared(x,t) + v_drug(x,t,c_drug) + v_cell(x,t,c_cell)
 
         Args:
             x: expression, shape (B, D)
@@ -234,11 +236,17 @@ class CFMModel(nn.Module):
         if s_t is not None:
             l_geom = self.loss_fn.l_geom(x_t, s_t, v_pred)
 
-        # L_context: sparsity regularization on context-specific velocity corrections.
-        # Keeps v_context_k small so v_shared captures the dominant dynamics;
-        # context heads provide drug/cell-line residuals only.
-        v_ctx_l2 = torch.stack([v.pow(2).mean() for v in v_ctx_outputs]).mean()
-        l_context = v_ctx_l2
+        # L_context: sparsity regularization on v_drug and v_cell corrections.
+        # Keeps corrections small so v_shared captures dominant dynamics;
+        # drug/cell heads provide condition-specific residuals only.
+        l_context = torch.stack([v.pow(2).mean() for v in v_ctx_outputs]).mean()
+
+        # L_orth: orthogonality regularization between v_drug and v_cell.
+        # Encourages the drug and cell-line corrections to point in orthogonal
+        # directions in gene space, preventing residual feature entanglement.
+        # L_orth = E[cosine_similarity(v_drug, v_cell)²]  ∈ [0, 1]
+        v_drug_out, v_cell_out = v_ctx_outputs
+        l_orth = self.loss_fn.l_orth(v_drug_out, v_cell_out)
 
         # L_smooth: Hutchinson estimator of ‖∂v/∂x‖_F².
         # E_ε[‖(∂v/∂x)ε‖²] = ‖∂v/∂x‖_F² when ε ~ N(0,I).
@@ -247,15 +255,16 @@ class CFMModel(nn.Module):
         v_pred_eps = self._forward_internal(x_t + eps * noise, t_emb, c)[0]
         jvp = (v_pred_eps - v_pred) / eps
         l_smooth = jvp.pow(2).mean()
-        
+
         # Total loss
-        total_loss = self.loss_fn.total_loss(l_flow, l_geom, l_context, l_smooth)
-        
+        total_loss = self.loss_fn.total_loss(l_flow, l_geom, l_context, l_smooth, l_orth)
+
         return {
             "total_loss": total_loss,
             "l_flow": l_flow.item(),
             "l_geom": l_geom.item(),
             "l_context": l_context.item(),
+            "l_orth": l_orth.item(),
             "l_smooth": l_smooth.item(),
         }
 

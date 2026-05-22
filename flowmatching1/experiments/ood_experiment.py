@@ -182,9 +182,10 @@ def run_ood_fold(
     model = CFMModel(
         input_dim=X_train.shape[1],
         context_dim=c_train.shape[1],
+        drug_context_dim=context_encoder.embedding_dim,
+        cell_context_dim=context_encoder.embedding_dim,
         hidden_dim=config["stage2"]["hidden_dim"],
         n_layers=config["stage2"]["n_layers"],
-        n_contexts=max(1, n_drugs_tr),
     )
 
     # Build Bézier batches (same logic as run_pipeline.py)
@@ -204,39 +205,98 @@ def run_ood_fold(
             print(f"  Warning: reduced batch_size to {batch_size} (smallest state = {smallest_state})")
 
     rng = np.random.default_rng(config["data"]["seed"])
-    n_batches = smallest_state // batch_size
-    x0_list, xT_list, x1_list, t_list = [], [], [], []
-    for _ in range(n_batches):
-        i0 = rng.choice(idx_state["p0"], batch_size, replace=False)
-        iT = rng.choice(idx_state["pT"], batch_size, replace=False)
-        i1 = rng.choice(idx_state["p1"], batch_size, replace=False)
-        x0_list.append(X_tensor[i0])
-        xT_list.append(X_tensor[iT])
-        x1_list.append(X_tensor[i1])
-        t_list.append(torch.rand(batch_size, 1))
+
+    # ── Condition-stratified batch construction ────────────────────────────────
+    # KEY FIX: bind (x0, xT, x1) and context c to the SAME drug×cell_line condition.
+    # Previously context was sampled randomly from all cells → x and c were
+    # decorrelated → v_drug/v_cell received only noise as training signal.
+    # With stratified sampling, the model sees proper (state, condition) pairs.
+    drug_arr = adata_train.obs["drug"].values
+    cl_arr   = adata_train.obs["cell_line"].values
+    seen_cond_list = [
+        (d, cl)
+        for d  in np.unique(drug_arr)
+        for cl in np.unique(cl_arr)
+    ]
+
+    timepoint_arr = adata_train.obs["timepoint_id"].values  # 0=P0, 1=P_T, 2=P1
+
+    cond_batches = []   # list of (x0, xT, x1, t, c, s)
+    for drug, cell_line in seen_cond_list:
+        cond_mask = (drug_arr == drug) & (cl_arr == cell_line)
+        g_idx     = np.where(cond_mask)[0]          # indices into X_train
+
+        # Use actual timepoint_id labels — more reliable than KMeans state labels
+        # which are global clusters and may not align with per-condition timepoints
+        tp_cond   = timepoint_arr[cond_mask]
+        idx_p0_c  = g_idx[tp_cond == 0]
+        idx_pT_c  = g_idx[tp_cond == 1]
+        idx_p1_c  = g_idx[tp_cond == 2]
+
+        min_cells = min(len(idx_p0_c), len(idx_pT_c), len(idx_p1_c))
+        if min_cells < batch_size:
+            if verbose:
+                print(f"  Skip {drug}×{cell_line}: {min_cells} cells/state < batch_size")
+            continue
+
+        # Context: target-dose encoding for this condition (matches inference time)
+        drug_id  = condition_vocab.get_drug_id(drug)
+        cl_id    = condition_vocab.get_cell_line_id(cell_line)
+        d_ids_c  = torch.tensor([drug_id]  * batch_size, dtype=torch.long)
+        cl_ids_c = torch.tensor([cl_id]    * batch_size, dtype=torch.long)
+        tdose    = torch.full((batch_size, 1), float(n_timepoints - 1), dtype=torch.float32)
+        c_cond   = context_encoder(d_ids_c, cl_ids_c, tdose).detach()
+
+        n_cond_batches = min_cells // batch_size
+        for _ in range(n_cond_batches):
+            i0 = rng.choice(idx_p0_c, batch_size, replace=False)
+            iT = rng.choice(idx_pT_c, batch_size, replace=False)
+            i1 = rng.choice(idx_p1_c, batch_size, replace=False)
+            cond_batches.append((
+                X_tensor[i0], X_tensor[iT], X_tensor[i1],
+                torch.rand(batch_size, 1),
+                c_cond,
+                s_tensor[i0],
+            ))
+
+    if not cond_batches:
+        raise RuntimeError(
+            "No valid condition batches — increase n_cells_per_condition or reduce batch_size."
+        )
+    if verbose:
+        print(f"  Stratified batches: {len(cond_batches)} total "
+              f"from {len(seen_cond_list)} conditions")
 
     trainer = CFMTrainer(model, learning_rate=config["stage2"]["learning_rate"])
     n_epochs = config["stage2"]["n_epochs"]
-    n_cells_tr = X_tensor.shape[0]
 
     for epoch in range(n_epochs):
-        total_loss = 0.0
-        for i in range(len(x0_list)):
-            ctx_idx = rng.choice(n_cells_tr, batch_size)
-            c_batch = c_train[ctx_idx]
-            s_batch = s_tensor[ctx_idx]
+        total_loss  = 0.0
+        total_orth  = 0.0
+        total_flow  = 0.0
+        perm = rng.permutation(len(cond_batches))   # shuffle each epoch
 
-            loss_dict = model.training_step(
-                x0_list[i], xT_list[i], x1_list[i], t_list[i], c_batch, s_t=s_batch
-            )
+        for idx in perm:
+            x0, xT, x1, t, c_batch, s_batch = cond_batches[idx]
+
+            # CFG: randomly null out context (15% drop)
+            c_in = torch.zeros_like(c_batch) if rng.random() < 0.15 else c_batch
+
+            loss_dict = model.training_step(x0, xT, x1, t, c_in, s_t=s_batch)
             trainer.optimizer.zero_grad()
             loss_dict["total_loss"].backward()
             torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
             trainer.optimizer.step()
-            total_loss += loss_dict["total_loss"].item()
+            total_loss  += loss_dict["total_loss"].item()
+            total_orth  += loss_dict.get("l_orth",  0.0)
+            total_flow  += loss_dict.get("l_flow",  0.0)
 
         if verbose and (epoch + 1) % max(1, n_epochs // 5) == 0:
-            print(f"  Epoch {epoch+1}/{n_epochs} | Loss: {total_loss/len(x0_list):.4f}")
+            nb = len(cond_batches)
+            print(f"  Epoch {epoch+1}/{n_epochs} | "
+                  f"Loss: {total_loss/nb:.4f} | "
+                  f"l_flow: {total_flow/nb:.4f} | "
+                  f"l_orth: {total_orth/nb:.4f}")
 
     if verbose:
         print("  Training done.")
